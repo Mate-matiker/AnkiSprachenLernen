@@ -1,0 +1,36 @@
+audio_extension: .mp3
+audio_path: path/to/audio
+decks:
+- name: Main Deck
+  subdecks:
+  - cards:
+    - back: Default Back
+      front: Default Front
+    csv_file: path/to/default.csv
+    csv_headers:
+    - Deutsch
+    - Romaji
+    - Hiragana
+    - Katakana
+    name: Default Subdeck Name
+    subdecks:
+    - cards: []
+      csv_file: path/to/default.csv
+      csv_headers:
+      - Deutsch
+      - Romaji
+      - Hiragana
+      - Katakana
+      name: Default Subdeck Name
+      subdecks:
+      - cards: []
+        csv_file: path/to/default.csv
+        csv_headers:
+        - Deutsch
+        - Romaji
+        - Hiragana
+        - Katakana
+        name: Default Subdeck Name
+        subdecks: []
+image_extension: .jpg
+image_path: path/to/images

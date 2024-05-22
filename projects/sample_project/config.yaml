@@ -1,0 +1,55 @@
+# Hauptkonfigurationsdatei für das Projekt AnkiSprachenLernen
+
+# Definition der Deckstruktur mit spezifischen Einstellungen pro Subdeck
+decks:
+  - name: "Main Deck"
+    subdecks:
+      - name: "Subdeck 1"
+        csv_file: "projects/sample_project/data/vocab/subdeck1.csv"
+        csv_headers:
+          - Deutsch
+          - Romaji
+          - Hiragana
+          - Katakana
+        cards:
+          - front: "{Deutsch} - {Romaji} {Bild}"
+            back: "{Hiragana} - {Katakana} {Audio}"
+          - front: "{Deutsch} {Bild}"
+            back: "{Hiragana} ({Romaji}) {Audio}"
+          - front: "{Romaji} {Bild}"
+            back: "{Deutsch} - {Katakana} {Audio}"
+        subdecks:
+          - name: "Subdeck 1.1"
+            csv_file: "projects/sample_project/data/vocab/subdeck1_1.csv"
+            csv_headers:
+              - Deutsch
+              - Romaji
+              - Hiragana
+              - Katakana
+            cards:
+              - front: "{Deutsch} - {Romaji} {Bild}"
+                back: "{Hiragana} - {Katakana} {Audio}"
+              - front: "{Deutsch} {Bild}"
+                back: "{Hiragana} ({Romaji}) {Audio}"
+              - front: "{Romaji} {Bild}"
+                back: "{Deutsch} - {Katakana} {Audio}"
+      - name: "Subdeck 2"
+        csv_file: "projects/sample_project/data/vocab/subdeck2.csv"
+        csv_headers:
+          - Wort
+          - Transliteration
+          - Hiragana
+          - Katakana
+        cards:
+          - front: "{Wort} - {Transliteration} {Bild}"
+            back: "{Hiragana} - {Katakana} {Audio}"
+          - front: "{Wort} {Bild}"
+            back: "{Hiragana} ({Transliteration}) {Audio}"
+          - front: "{Transliteration} {Bild}"
+            back: "{Wort} - {Katakana} {Audio}"
+
+# Pfade zu den Medienverzeichnissen
+audio_path: "projects/sample_project/data/audio"
+audio_extension: ".mp3"
+image_path: "projects/sample_project/data/images"
+image_extension: ".jpg"
