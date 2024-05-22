@@ -3,122 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Config Generator</title>
+    <title>Anki Deck Generator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script>
-        function addSubdeck(prefix, defaultName = "Default Subdeck Name", defaultCsv = "path/to/default.csv", defaultHeaders = "Deutsch,Romaji,Hiragana,Katakana") {
-            const subdeckCountElement = document.getElementById(`${prefix}_subdeck_count`);
-            if (!subdeckCountElement) {
-                console.error(`Element with ID ${prefix}_subdeck_count not found`);
-                return;
-            }
-            const count = parseInt(subdeckCountElement.value);
-            const newCount = count + 1;
-            subdeckCountElement.value = newCount;
-
-            const subdeckSection = document.getElementById(`${prefix}_subdeck_section`);
-            if (!subdeckSection) {
-                console.error(`Element with ID ${prefix}_subdeck_section not found`);
-                return;
-            }
-            const newSubdeck = document.createElement('div');
-            newSubdeck.id = `${prefix}_subdeck_${count}`;
-            newSubdeck.innerHTML = `
-                <h3>${prefix === 'main' ? 'Subdeck' : 'Nested Subdeck'} ${newCount}</h3>
-                <label for="${prefix}_subdeck_name_${count}">Name:</label>
-                <input type="text" id="${prefix}_subdeck_name_${count}" name="${prefix}_subdeck_name_${count}" value="${defaultName}" required><br>
-                <label for="${prefix}_subdeck_csv_${count}">CSV File Path:</label>
-                <input type="text" id="${prefix}_subdeck_csv_${count}" name="${prefix}_subdeck_csv_${count}" value="${defaultCsv}" required><br>
-                <label for="${prefix}_csv_headers_${count}">CSV Headers (comma separated):</label>
-                <input type="text" id="${prefix}_csv_headers_${count}" name="${prefix}_csv_headers_${count}" value="${defaultHeaders}" required><br>
-                <input type="hidden" id="${prefix}_card_count_${count}" name="${prefix}_card_count_${count}" value="0">
-                <div id="${prefix}_cards_${count}"></div>
-                <button type="button" onclick="addCard('${prefix}', ${count})">Add Card</button>
-                <button type="button" onclick="removeSubdeck('${prefix}_subdeck_${count}', '${prefix}_subdeck_count')">Remove Subdeck</button>
-                <br><br>
-                <input type="hidden" id="${prefix}_subdeck_${count}_subdeck_count" name="${prefix}_subdeck_${count}_subdeck_count" value="0">
-                <div id="${prefix}_subdeck_${count}_subdeck_section"></div>
-                <button type="button" onclick="addSubdeck('${prefix}_subdeck_${count}')">Add Nested Subdeck</button>
-                <br><br>
-            `;
-            subdeckSection.appendChild(newSubdeck);
-        }
-
-        function addCard(prefix, subdeckIndex, defaultFront = "Default Front", defaultBack = "Default Back") {
-            const cardCountElement = document.getElementById(`${prefix}_card_count_${subdeckIndex}`);
-            if (!cardCountElement) {
-                console.error(`Element with ID ${prefix}_card_count_${subdeckIndex} not found`);
-                return;
-            }
-            const count = parseInt(cardCountElement.value);
-            const newCount = count + 1;
-            cardCountElement.value = newCount;
-
-            const cardSection = document.getElementById(`${prefix}_cards_${subdeckIndex}`);
-            if (!cardSection) {
-                console.error(`Element with ID ${prefix}_cards_${subdeckIndex} not found`);
-                return;
-            }
-            const newCard = document.createElement('div');
-            newCard.id = `${prefix}_card_${subdeckIndex}_${count}`;
-            newCard.innerHTML = `
-                <h4>Card ${newCount}</h4>
-                <label for="${prefix}_card_${subdeckIndex}_front_${count}">Front:</label>
-                <input type="text" id="${prefix}_card_${subdeckIndex}_front_${count}" name="${prefix}_card_${subdeckIndex}_front_${count}" value="${defaultFront}" required><br>
-                <label for="${prefix}_card_${subdeckIndex}_back_${count}">Back:</label>
-                <input type="text" id="${prefix}_card_${subdeckIndex}_back_${count}" name="${prefix}_card_${subdeckIndex}_back_${count}" value="${defaultBack}" required><br>
-                <button type="button" onclick="removeElement('${prefix}_card_${subdeckIndex}_${count}')">Remove Card</button>
-            `;
-            cardSection.appendChild(newCard);
-        }
-
-        function removeSubdeck(subdeckId, countId) {
-            const subdeckElement = document.getElementById(subdeckId);
-            if (subdeckElement) {
-                subdeckElement.parentNode.removeChild(subdeckElement);
-                // Update the subdeck count
-                const countElement = document.getElementById(countId);
-                const count = parseInt(countElement.value);
-                countElement.value = count - 1;
-            } else {
-                console.error(`Element with ID ${subdeckId} not found`);
-            }
-        }
-
-        function removeElement(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.parentNode.removeChild(element);
-            } else {
-                console.error(`Element with ID ${elementId} not found`);
-            }
-        }
-    </script>
 </head>
 <body>
-<h1>Config Generator</h1>
-<form action="{{ url_for('generate_config') }}" method="post">
-    <label for="main_deck_name">Main Deck Name:</label>
-    <input type="text" id="main_deck_name" name="main_deck_name" value="Main Deck" required><br>
-
-    <label for="audio_path">Audio Path:</label>
-    <input type="text" id="audio_path" name="audio_path" value="path/to/audio" required><br>
-
-    <label for="audio_extension">Audio Extension:</label>
-    <input type="text" id="audio_extension" name="audio_extension" value=".mp3" required><br>
-
-    <label for="image_path">Image Path:</label>
-    <input type="text" id="image_path" name="image_path" value="path/to/images" required><br>
-
-    <label for="image_extension">Image Extension:</label>
-    <input type="text" id="image_extension" name="image_extension" value=".jpg" required><br>
-
-    <input type="hidden" id="main_subdeck_count" name="subdeck_count" value="0">
-    <div id="main_subdeck_section"></div>
-    <button type="button" onclick="addSubdeck('main')">Add Subdeck</button>
-
-    <br><br>
-    <button type="submit">Generate Config</button>
-</form>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Existing Configurations</h2>
+            <ul id="deck_tree">
+                {% for file in config_files %}
+                <li><a href="#" onclick="selectDeck('{{ file }}')">{{ file }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="content">
+            <div id="deck_editor">
+                <h2>Select a deck to edit</h2>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='deckEditor.js') }}"></script>
 </body>
 </html>
